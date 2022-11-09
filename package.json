@@ -1,0 +1,39 @@
+{
+  "name": "api-server",
+  "private": true,
+  "engines": {
+    "node": ">=16.13.0"
+  },
+  "scripts": {
+    "start": "ncc run src/index.ts",
+    "build": "ncc build src/index.ts -sm",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix"
+  },
+  "dependencies": {
+    "@fastify/cors": "^8.0.0",
+    "axios": "^0.27.2",
+    "class-validator": "^0.13.2",
+    "dayjs": "^1.11.4",
+    "dotenv": "^16.0.1",
+    "ethers": "^5.6.9",
+    "fastify": "^4.3.0",
+    "fastify-plugin": "^4.0.0",
+    "graphql": "^16.5.0",
+    "graphql-scalars": "^1.17.0",
+    "mercurius": "^10.1.0",
+    "nexus": "^1.3.0",
+    "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.45",
+    "@types/pg": "^8.6.5",
+    "@vercel/ncc": "^0.34.0",
+    "gts": "^3.1.0",
+    "prettier": "^2.7.1",
+    "prettier-plugin-organize-imports": "^3.0.0",
+    "typescript": "^4.7.4"
+  }
+}
