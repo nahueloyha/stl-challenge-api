@@ -19,8 +19,8 @@ jobs:
     name: Build
     uses: ./.github/workflows/reusable.yml
     with:
-      ECR_INPUT: ${{ env.NAMESPACE }}
-      AWS_REGION: ${{ env.AWS_REGION }}
+      ECR_INPUT: $NAMESPACE
+      AWS_REGION: $AWS_REGION
     secrets: inherit
 
   deploy:
