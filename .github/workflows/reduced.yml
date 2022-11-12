@@ -1,4 +1,4 @@
-name: Reduced pipeline for non-stage/prod
+name: Reduced pipeline (for non-stage/prod)
 
 on: 
   pull_request:
@@ -16,9 +16,9 @@ env:
   ENVIRONMENT: ${{ github.ref_name }}
 
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/reusable.yml
+  push:
+    name: Push
+    uses: ./.github/workflows/shared.yml
     with:
       ECR_INPUT: stl-challenge
       AWS_REGION: us-east-1

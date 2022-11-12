@@ -1,4 +1,4 @@
-name: Complete pipeline for stage/prod
+name: Complete pipeline (for stage/prod)
 
 on:
   push:
@@ -15,9 +15,9 @@ env:
   ENVIRONMENT: ${{ github.ref_name }}
 
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/reusable.yml
+  push:
+    name: Push
+    uses: ./.github/workflows/shared.yml
     with:
       ECR_INPUT: stl-challenge
       AWS_REGION: us-east-1
@@ -47,7 +47,7 @@ jobs:
       with:
         task-definition: task-definition.json
         container-name: ${{ env.NAMESPACE }}-${{ env.ENVIRONMENT }}
-        image: ${{ needs.build.outputs.image }}
+        image: ${{ needs.push.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -55,4 +55,4 @@ jobs:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
         service: ${{ env.NAMESPACE }}-${{ env.ENVIRONMENT }}
         cluster: ${{ env.NAMESPACE }}-${{ env.ENVIRONMENT }}
-        wait-for-service-stability: true
+        wait-for-service-stability: false
