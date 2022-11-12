@@ -8,7 +8,7 @@ on:
         type: string
     outputs:
       image:
-        descrition: "Docker image"
+        description: "Docker image"
         value: ${{ jobs.reusable.outputs.image_output }}
 
 
