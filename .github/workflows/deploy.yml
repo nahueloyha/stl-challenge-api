@@ -9,7 +9,7 @@ on:
 env:
   AWS_REGION: us-east-1
   NAMESPACE: stl-challenge
-  ENVIRONMENT: ${{ github.GITHUB_REF_NAME }}
+  ENVIRONMENT: ${{ github.ref_name }}
 
 permissions:
   contents: read
