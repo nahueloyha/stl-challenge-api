@@ -44,9 +44,9 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -t $ECR-REGISTRY/$NAMESPACE-$ENVIRONMENT:$IMAGE_TAG .
-        docker push $ECR-REGISTRY/$NAMESPACE-$ENVIRONMENT:$IMAGE_TAG
-        echo "::set-output name=image::$ECR-REGISTRY/$NAMESPACE-$ENVIRONMENT:$IMAGE_TAG"
+        docker build -t $ECR_REGISTRY/$NAMESPACE-$ENVIRONMENT:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$NAMESPACE-$ENVIRONMENT:$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/$NAMESPACE-$ENVIRONMENT:$IMAGE_TAG"
 
     - name: Download AWS ECS Task Definition
       run: |
