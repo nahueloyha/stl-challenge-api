@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name }}
-    needs: build
+    needs: push
 
     steps:
     - name: Configure AWS credentials
