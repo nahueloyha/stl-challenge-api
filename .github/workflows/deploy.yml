@@ -21,6 +21,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name }}
+    needs: build
 
     steps:
     - name: Download AWS ECS Task Definition
