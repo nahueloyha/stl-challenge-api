@@ -1,0 +1,55 @@
+name: Reusable build job
+
+on:
+  workflow_call:
+    inputs:
+      ECR_INPUT:
+        required: true
+        type: string
+    outputs:
+      image:
+        descrition: "Docker image"
+        value: ${{ jobs.reusable.outputs.image_output }}
+
+
+env:
+  AWS_REGION: us-east-1
+  ENVIRONMENT: ${{ github.ref_name }}
+
+jobs:
+  reusable:
+    name: Reusable
+    runs-on: ubuntu-latest
+    outputs:
+      image_output: steps.build-image.outputs.image_ecr
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1-node16
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+        ECR_REPOSITORY: ${{ inputs.ECR_INPUT }}
+      run: |
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image_ecr=$ECR_REGISTRY/$NAMESPACE-$ENVIRONMENT:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        
+        

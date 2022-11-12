@@ -6,48 +6,23 @@ on:
       - stage
       - prod
       
-env:
-  AWS_REGION: us-east-1
-  NAMESPACE: stl-challenge
-  ENVIRONMENT: ${{ github.ref_name }}
-
 permissions:
   contents: read
 
 jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/reusable.yml
+    with:
+      ECR_INPUT: stl-challenge
+    secrets: inherit
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name }}
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1-node16
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
-
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-
-    - name: Build, tag, and push image to Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$NAMESPACE-$ENVIRONMENT:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$NAMESPACE-$ENVIRONMENT:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$NAMESPACE-$ENVIRONMENT:$IMAGE_TAG"
-
     - name: Download AWS ECS Task Definition
       run: |
         aws ecs describe-task-definition --task-definition $NAMESPACE-$ENVIRONMENT --query taskDefinition > task-definition.json
@@ -58,7 +33,7 @@ jobs:
       with:
         task-definition: task-definition.json
         container-name: ${{ env.NAMESPACE }}-${{ env.ENVIRONMENT }}
-        image: ${{ steps.build-image.outputs.image }}
+        image: ${{ needs.build.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
