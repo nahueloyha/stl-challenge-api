@@ -1,6 +1,11 @@
 name: Build & Push to Amazon ECR
 
-on: [push, pull_request]
+on: 
+  pull_request:
+  push:
+    branches-ignore:
+      - stage
+      - prod
     
 env:
   AWS_REGION: us-east-1

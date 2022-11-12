@@ -5,11 +5,11 @@ on:
     branches: 
       - stage
       - prod
-
+      
 env:
   AWS_REGION: us-east-1
   NAMESPACE: stl-challenge
-  ENVIRONMENT: ${{ GITHUB_REF_NAME }}
+  ENVIRONMENT: $GITHUB_REF_NAME
 
 permissions:
   contents: read
