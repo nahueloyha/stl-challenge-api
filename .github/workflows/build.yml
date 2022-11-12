@@ -1,4 +1,4 @@
-name: Build & Push to Amazon ECR
+name: Reduced pipeline for non-stage/prod
 
 on: 
   pull_request:
@@ -10,10 +10,16 @@ on:
 permissions:
   contents: read
 
+env:
+  AWS_REGION: us-east-1
+  NAMESPACE: stl-challenge
+  ENVIRONMENT: ${{ github.ref_name }}
+
 jobs:
   build:
     name: Build
     uses: ./.github/workflows/reusable.yml
     with:
-      ECR_INPUT: stl-challenge
+      ECR_INPUT: ${{ NAMESPACE }}
+      AWS_REGION: ${{ AWS_REGION }}
     secrets: inherit

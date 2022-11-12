@@ -6,14 +6,15 @@ on:
       ECR_INPUT:
         required: true
         type: string
+      AWS_REGION:
+        required: true
+        type: string
     outputs:
       image:
         description: "Docker image"
         value: ${{ jobs.reusable.outputs.image_output }}
 
-
 env:
-  AWS_REGION: us-east-1
   ENVIRONMENT: ${{ github.ref_name }}
 
 jobs:
