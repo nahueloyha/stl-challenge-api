@@ -4,62 +4,46 @@
 
 ## Description
 
-...
+Repository for the API of the Smart Token Labs challenge.
 
 ## Stack
 
-...
+About this API:
+
+- it is made by using [Fastify](https://www.fastify.io/), a web framework for Node.js.
+- it comprises a GraphQL server with it's own schema and appropiate resolvers for connecting to a PostgreSQL database.
+- it uses [mercurius](https://mercurius.dev/#/) as a GraphQL adapter for Fastify.
+- it includes [GrapihQL](https://github.com/graphql/graphiql/tree/main/packages/graphiql), a GraphQL in-browser GUI
 
 ## Environments
 
-There are currently two enviroments, deployed in the Edrans Corp Tools AWS Account (825248816400) but on different VPCs:
+There are currently two enviroments, deployed on different VPCs, each with it's own API, DB and GraphiQL endpoint:
 
-- Stage: deployed in the _critical_ VPC and accesible under [edrans.com](edrans.com)
-- Prod: deployed in the _noncritical_ and accesible under [stg.edrans.net](stg.edrans.net)
+- Stage: [http://api.stl-stage.nahueloyha.com:3006/graphiql](http://api.stl-stage.nahueloyha.com:3006/graphiql)
+- Prod: [http://api.stl-prod.nahueloyha.com:3006/graphiql](http://api.stl-prod.nahueloyha.com:3006/graphiql)
 
 ## Requirements
 
-Build:
-
-- node 16
-
-Runtime:
-
-- node 16
+- Node 16
 - PostgreSQL (12 or higher)
 
 ## Build
 
-1. Export the required STAGE/TENANT, for example: `export STAGE=prd && export TENANT=air`
-2. Build the image: `docker build -f utils/Dockerfile.apache -t uvod-api:latest .`
-3. Run the image: `docker run -p 80:80 --env-file .env uvod-api:latest`
+1. Install the required NPM dependencies: `npm ci`
+2. Compile the typescript files: `npm run build`
+3. Stat the API: `node dist/index.js`
 
-```sh
-npm ci
-npm run build
-```
+## Deploy
 
-Build artifacts stored in `dist` directory.
+Automatic deployment is configured by using [GitHub Actions](https://github.com/nahueloyha/stl-challenge-api/actions), where:
 
-Run:
-
-```sh
-node dist/index.js
-```
-
-The webui can be access from `/graphiql`. Like: http://127.0.0.1:3006/graphiql
-
-## Deploy 
-
-...
-
-CI/CD is configured via Terraform using CodeBuild and CodePipeline, as you can check [HERE](https://github.com/Arielmatz/terraform-scripts/blob/master/common/uvod-api-cicd.tf).
-
-Deployments are triggered automatically after a push to the `pixellot-version-stg` branch.
+- a pull request opened against any branch on this repo will build and push of the Docker image to the ECR registry
+- a commit pushed to any branch on this repo will also build and push of the Docker image to the ECR registry
+- a commit pushed to specific `stage` or `prod` branch will, additionally, deploy the built image to the ECS cluster
 
 ## Configuration
 
-Avaliable environment variables:
+The following environment variables are available to configure the behaviour of the API:
 
 | Variable        | Description                  | Default   |
 | --------------- | ---------------------------- | --------- |
@@ -71,5 +55,3 @@ Avaliable environment variables:
 | DB_USER         | PostgreSQL database username | tf_admin  |
 | DB_PASSWORD     | PostgreSQL database password | admin     |
 | DB_DATABASE     | PostgreSQL database name     | tf        |
-
-You can change these environment variables to suit your environment.
